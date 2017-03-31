@@ -38,7 +38,18 @@ function compare_point(a, b)
     return 0;
 }
 
-function calculate_squares(points)
+function indexOfPointInList(points, x, y) {
+    var i = 0;
+    var points_length = points.length;
+    for(i=0; i<points_length; i++ ) {
+        if( points[i].x == x && points[i].y == y ) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function calculate_squares(points, supress_points)
 {
     var i=0, j=0, k=0;
     var original_vec = [0, 0];
@@ -54,6 +65,8 @@ function calculate_squares(points)
             // get 2 points first
             square_obj.push({x: points[i].x, y: points[i].y});
             square_obj.push({x: points[j].x, y: points[j].y});
+            if( indexOfPointInList(supress_points, square_obj[0].x, square_obj[0].y) >= 0 ) continue;
+            if( indexOfPointInList(supress_points, square_obj[1].x, square_obj[1].y) >= 0 ) continue;
             
             // calculate vector
             original_vec = [points[j].x - points[i].x, points[j].y - points[i].y];
@@ -65,6 +78,7 @@ function calculate_squares(points)
                 square_obj[2].x < 0 ||
                 square_obj[2].y > max_y ||
                 square_obj[2].y < 0 ) continue;
+            if( indexOfPointInList(supress_points, square_obj[2].x, square_obj[2].y) >= 0 ) continue;
 
             // calculate point 4
             rotated_vec = rotate_vector(original_vec, -180.0);
@@ -73,6 +87,7 @@ function calculate_squares(points)
                 square_obj[3].x  < 0 ||
                 square_obj[3].y > max_y ||
                 square_obj[3].y < 0 ) continue;
+            if( indexOfPointInList(supress_points, square_obj[3].x, square_obj[3].y) >= 0 ) continue;
 
             // normalize square_obj
             var min_index = 0;
@@ -130,13 +145,15 @@ class App extends React.Component
 
         // states
         var points = calculate_points(default_width, default_n);
-        var squares = calculate_squares(points);
+        var supress_points = [];
+        var squares = calculate_squares(points, supress_points);
         var squares_statistics = calulate_squares_statistics(squares);
         this.state = {
             width: default_width,
             width_inc: (default_width - point_radius*2)/(default_n-1),
             n: default_n,
             points: points,
+            supress_points: supress_points,
             squares: squares,
             squares_statistics: squares_statistics
         };
@@ -153,20 +170,45 @@ class App extends React.Component
     }
     handleSubmit(event) {
         var points = calculate_points(this.state.width, this.state.n);
-        var squares = calculate_squares(points);
+        var supress_points = [];
+        var squares = calculate_squares(points, supress_points);
         var squares_statistics = calulate_squares_statistics(squares);
         this.setState({width_inc: (this.state.width - point_radius*2) / (this.state.n - 1)});
         this.setState({points: points});
+        this.setState({supress_points: supress_points});
         this.setState({squares: squares});
         this.setState({squares_statistics: squares_statistics});
         event.preventDefault();
     }
+    handleClick(x, y, event) {
+        var point = {x: x, y: y};
+        var supress_points = this.state.supress_points;
+
+        // check if already in supress
+        var index = indexOfPointInList(supress_points, x, y);
+        if( index >= 0 ) {
+            console.log("remove (" + point.x + ", " + point.y + ") from supress_points");
+            supress_points.splice(index, 1);
+        } else {
+            console.log("add (" + point.x + ", " + point.y + ") to supress_points");
+            supress_points.push(point);
+        }
+
+        // update state
+        this.setState({supress_points: supress_points});
+
+        // recalculate square
+        var squares = calculate_squares(this.state.points, supress_points);
+        var squares_statistics = calulate_squares_statistics(squares);
+        this.setState({squares: squares});
+        this.setState({squares_statistics: squares_statistics});
+    }
     render() {
-        var style = {
+        var pageStyle = {
             padding: "50px 30px 50px 80px"
         };
         return (
-            <div style={style}>
+            <div style={pageStyle}>
                 <form onSubmit={this.handleSubmit}>
                     <label>
                         Width:
@@ -190,13 +232,6 @@ class App extends React.Component
                     </ul>
                 </div>             
                 <svg width={this.state.width} height={this.state.width}>
-                    {this.state.points.map((value, index) => {
-                        var cx = value.x*this.state.width_inc + point_radius;
-                        var cy = value.y*this.state.width_inc + point_radius;
-                        return (
-                            <circle cx={cx} cy={cy} r={point_radius} fill="red" />
-                        )
-                    })}
                     {this.state.squares.map((value, index) => {
                         var x1 = value[0].x*this.state.width_inc + point_radius;
                         var y1 = value[0].y*this.state.width_inc + point_radius;
@@ -231,6 +266,18 @@ class App extends React.Component
                         var y2 = value[0].y*this.state.width_inc + point_radius;
                         return (
                             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="red" strokeWidth={stroke_width} />
+                        )
+                    })}
+                    {this.state.points.map((value, index) => {
+                        var cx = value.x*this.state.width_inc + point_radius;
+                        var cy = value.y*this.state.width_inc + point_radius;
+                        var handleClick = this.handleClick.bind(this, value.x, value.y);
+                        var color = "red";
+                        if( indexOfPointInList(this.state.supress_points, value.x, value.y) >= 0 ) {
+                            color = "black";
+                        }
+                        return (
+                            <circle cx={cx} cy={cy} r={point_radius} fill={color} onClick={handleClick} />
                         )
                     })}
                 </svg>
