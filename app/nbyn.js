@@ -96,8 +96,8 @@ function calulate_squares_statistics(squares)
     var area = 0;
     for( i=0; i<squares.length; i++ ) {
         area = (squares[i][0].x - squares[i][1].x)**2 + (squares[i][0].y - squares[i][1].y)**2;
-        if( isNaN(squares_statics_obj[area]) ) squares_statics_obj[area] = 0;
-        squares_statics_obj[area] += 1;
+        if( squares_statics_obj[area] === undefined ) squares_statics_obj[area] = [];
+        squares_statics_obj[area].push(squares[i]);
     }
     return squares_statics_obj;
 }
@@ -118,7 +118,8 @@ export default class NByNPage extends React.Component {
             points: points,
             supress_points: supress_points,
             squares: squares,
-            squares_statistics: squares_statistics
+            squares_statistics: squares_statistics,
+            square_area_selected: null
         };
 
         // event handler
@@ -141,6 +142,7 @@ export default class NByNPage extends React.Component {
         this.setState({supress_points: supress_points});
         this.setState({squares: squares});
         this.setState({squares_statistics: squares_statistics});
+        this.setState({square_area_selected: null});
         event.preventDefault();
     }
     handleClick(x, y, event) {
@@ -165,11 +167,30 @@ export default class NByNPage extends React.Component {
         var squares_statistics = calulate_squares_statistics(squares);
         this.setState({squares: squares});
         this.setState({squares_statistics: squares_statistics});
+        if( squares_statistics[this.state.square_area_selected] == undefined)
+            this.setState({square_area_selected: null});
+    }
+    handleAreaSelect(area, event) {
+        this.setState({square_area_selected: area});
     }
     render() {
         var pageStyle = {
             padding: "20px 30px 50px 30px"
         };
+
+        // determine squares to draw
+        var liStyle = {
+            'background-color': 'yellow'
+        };
+        var squares_to_draw = this.state.squares;
+        if( this.state.square_area_selected != null ) {
+            squares_to_draw = this.state.squares_statistics[this.state.square_area_selected];
+            liStyle['background-color'] = 'white';
+        }
+
+        // prepare liOnClick
+        var liOnClick = this.handleAreaSelect.bind(this, null);
+
         return (
             <div style={pageStyle}>
                 <form onSubmit={this.handleSubmit}>
@@ -184,18 +205,21 @@ export default class NByNPage extends React.Component {
                     <input type="submit" value="Submit" />
                 </form>
                 <div>
-                    Number of Squares: {this.state.squares.length}
-                </div>
-                <div>
                     Area Statistics (Area -> Count):
                     <ul>
+                        <li style={liStyle} onClick={liOnClick}>All -> {this.state.squares.length}</li>
                         {Object.keys(this.state.squares_statistics).map((key) => {
-                            return (<li key={"squares_statistics_" + key}>{key} -> {this.state.squares_statistics[key]}</li>);
+                            var liOnClick = this.handleAreaSelect.bind(this, key);
+                            var liStyle = {
+                                'background-color': 'white'
+                            };
+                            if( this.state.square_area_selected == key ) liStyle['background-color'] = 'yellow';
+                            return (<li style={liStyle} key={"squares_statistics_" + key} onClick={liOnClick}>{key} -> {this.state.squares_statistics[key].length}</li>);
                         })}
                     </ul>
                 </div>             
                 <svg width={this.state.width} height={this.state.width}>
-                    {this.state.squares.map((value, index) => {
+                    {squares_to_draw.map((value, index) => {
                         var x1 = value[0].x*this.state.width_inc + point_radius;
                         var y1 = value[0].y*this.state.width_inc + point_radius;
                         var x2 = value[1].x*this.state.width_inc + point_radius;
@@ -204,7 +228,7 @@ export default class NByNPage extends React.Component {
                             <line key={"line_" + x1 + "_" + y1 + "_" + x2 + "_" + y2} x1={x1} y1={y1} x2={x2} y2={y2} stroke="red" strokeWidth={stroke_width} />
                         )
                     })}
-                    {this.state.squares.map((value, index) => {
+                    {squares_to_draw.map((value, index) => {
                         var x1 = value[1].x*this.state.width_inc + point_radius;
                         var y1 = value[1].y*this.state.width_inc + point_radius;
                         var x2 = value[2].x*this.state.width_inc + point_radius;
@@ -213,7 +237,7 @@ export default class NByNPage extends React.Component {
                             <line key={"line_" + x1 + "_" + y1 + "_" + x2 + "_" + y2} x1={x1} y1={y1} x2={x2} y2={y2} stroke="red" strokeWidth={stroke_width} />
                         )
                     })}
-                    {this.state.squares.map((value, index) => {
+                    {squares_to_draw.map((value, index) => {
                         var x1 = value[2].x*this.state.width_inc + point_radius;
                         var y1 = value[2].y*this.state.width_inc + point_radius;
                         var x2 = value[3].x*this.state.width_inc + point_radius;
@@ -222,7 +246,7 @@ export default class NByNPage extends React.Component {
                             <line key={"line_" + x1 + "_" + y1 + "_" + x2 + "_" + y2} x1={x1} y1={y1} x2={x2} y2={y2} stroke="red" strokeWidth={stroke_width} />
                         )
                     })}
-                    {this.state.squares.map((value, index) => {
+                    {squares_to_draw.map((value, index) => {
                         var x1 = value[3].x*this.state.width_inc + point_radius;
                         var y1 = value[3].y*this.state.width_inc + point_radius;
                         var x2 = value[0].x*this.state.width_inc + point_radius;
