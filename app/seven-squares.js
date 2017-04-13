@@ -1,9 +1,19 @@
 import React from 'react';
 import { calculatePoints, rotateVector,
         comparePoint, indexOfPointInList } from './util.js'
-import { default_n, point_radius, stroke_width } from "./util.js"
+import { default_width, default_n, point_radius, stroke_width } from "./util.js"
 
 var sixBySixSquares = [[{"x":0,"y":0},{"x":1,"y":0},{"x":1,"y":1},{"x":0,"y":1}],[{"x":0,"y":0},{"x":2,"y":0},{"x":2,"y":2},{"x":0,"y":2}],[{"x":0,"y":0},{"x":3,"y":0},{"x":3,"y":3},{"x":0,"y":3}],[{"x":0,"y":0},{"x":4,"y":0},{"x":4,"y":4},{"x":0,"y":4}],[{"x":0,"y":0},{"x":5,"y":0},{"x":5,"y":5},{"x":0,"y":5}],[{"x":0,"y":1},{"x":1,"y":0},{"x":2,"y":1},{"x":1,"y":2}],[{"x":0,"y":1},{"x":1,"y":1},{"x":1,"y":2},{"x":0,"y":2}],[{"x":0,"y":1},{"x":2,"y":0},{"x":3,"y":2},{"x":1,"y":3}],[{"x":0,"y":1},{"x":2,"y":1},{"x":2,"y":3},{"x":0,"y":3}],[{"x":0,"y":1},{"x":3,"y":0},{"x":4,"y":3},{"x":1,"y":4}],[{"x":0,"y":1},{"x":3,"y":1},{"x":3,"y":4},{"x":0,"y":4}],[{"x":0,"y":1},{"x":4,"y":0},{"x":5,"y":4},{"x":1,"y":5}],[{"x":0,"y":1},{"x":4,"y":1},{"x":4,"y":5},{"x":0,"y":5}],[{"x":0,"y":2},{"x":1,"y":0},{"x":3,"y":1},{"x":2,"y":3}],[{"x":0,"y":2},{"x":1,"y":1},{"x":2,"y":2},{"x":1,"y":3}],[{"x":0,"y":2},{"x":1,"y":2},{"x":1,"y":3},{"x":0,"y":3}],[{"x":0,"y":2},{"x":2,"y":0},{"x":4,"y":2},{"x":2,"y":4}],[{"x":0,"y":2},{"x":2,"y":1},{"x":3,"y":3},{"x":1,"y":4}],[{"x":0,"y":2},{"x":2,"y":2},{"x":2,"y":4},{"x":0,"y":4}],[{"x":0,"y":2},{"x":3,"y":0},{"x":5,"y":3},{"x":2,"y":5}],[{"x":0,"y":2},{"x":3,"y":1},{"x":4,"y":4},{"x":1,"y":5}],[{"x":0,"y":2},{"x":3,"y":2},{"x":3,"y":5},{"x":0,"y":5}],[{"x":0,"y":3},{"x":1,"y":0},{"x":4,"y":1},{"x":3,"y":4}],[{"x":0,"y":3},{"x":1,"y":1},{"x":3,"y":2},{"x":2,"y":4}],[{"x":0,"y":3},{"x":1,"y":2},{"x":2,"y":3},{"x":1,"y":4}],[{"x":0,"y":3},{"x":1,"y":3},{"x":1,"y":4},{"x":0,"y":4}],[{"x":0,"y":3},{"x":2,"y":0},{"x":5,"y":2},{"x":3,"y":5}],[{"x":0,"y":3},{"x":2,"y":1},{"x":4,"y":3},{"x":2,"y":5}],[{"x":0,"y":3},{"x":2,"y":2},{"x":3,"y":4},{"x":1,"y":5}],[{"x":0,"y":3},{"x":2,"y":3},{"x":2,"y":5},{"x":0,"y":5}],[{"x":0,"y":4},{"x":1,"y":0},{"x":5,"y":1},{"x":4,"y":5}],[{"x":0,"y":4},{"x":1,"y":1},{"x":4,"y":2},{"x":3,"y":5}],[{"x":0,"y":4},{"x":1,"y":2},{"x":3,"y":3},{"x":2,"y":5}],[{"x":0,"y":4},{"x":1,"y":3},{"x":2,"y":4},{"x":1,"y":5}],[{"x":0,"y":4},{"x":1,"y":4},{"x":1,"y":5},{"x":0,"y":5}],[{"x":1,"y":0},{"x":2,"y":0},{"x":2,"y":1},{"x":1,"y":1}],[{"x":1,"y":0},{"x":3,"y":0},{"x":3,"y":2},{"x":1,"y":2}],[{"x":1,"y":0},{"x":4,"y":0},{"x":4,"y":3},{"x":1,"y":3}],[{"x":1,"y":0},{"x":5,"y":0},{"x":5,"y":4},{"x":1,"y":4}],[{"x":1,"y":1},{"x":2,"y":0},{"x":3,"y":1},{"x":2,"y":2}],[{"x":1,"y":1},{"x":2,"y":1},{"x":2,"y":2},{"x":1,"y":2}],[{"x":1,"y":1},{"x":3,"y":0},{"x":4,"y":2},{"x":2,"y":3}],[{"x":1,"y":1},{"x":3,"y":1},{"x":3,"y":3},{"x":1,"y":3}],[{"x":1,"y":1},{"x":4,"y":0},{"x":5,"y":3},{"x":2,"y":4}],[{"x":1,"y":1},{"x":4,"y":1},{"x":4,"y":4},{"x":1,"y":4}],[{"x":1,"y":1},{"x":5,"y":1},{"x":5,"y":5},{"x":1,"y":5}],[{"x":1,"y":2},{"x":2,"y":0},{"x":4,"y":1},{"x":3,"y":3}],[{"x":1,"y":2},{"x":2,"y":1},{"x":3,"y":2},{"x":2,"y":3}],[{"x":1,"y":2},{"x":2,"y":2},{"x":2,"y":3},{"x":1,"y":3}],[{"x":1,"y":2},{"x":3,"y":0},{"x":5,"y":2},{"x":3,"y":4}],[{"x":1,"y":2},{"x":3,"y":1},{"x":4,"y":3},{"x":2,"y":4}],[{"x":1,"y":2},{"x":3,"y":2},{"x":3,"y":4},{"x":1,"y":4}],[{"x":1,"y":2},{"x":4,"y":1},{"x":5,"y":4},{"x":2,"y":5}],[{"x":1,"y":2},{"x":4,"y":2},{"x":4,"y":5},{"x":1,"y":5}],[{"x":1,"y":3},{"x":2,"y":0},{"x":5,"y":1},{"x":4,"y":4}],[{"x":1,"y":3},{"x":2,"y":1},{"x":4,"y":2},{"x":3,"y":4}],[{"x":1,"y":3},{"x":2,"y":2},{"x":3,"y":3},{"x":2,"y":4}],[{"x":1,"y":3},{"x":2,"y":3},{"x":2,"y":4},{"x":1,"y":4}],[{"x":1,"y":3},{"x":3,"y":1},{"x":5,"y":3},{"x":3,"y":5}],[{"x":1,"y":3},{"x":3,"y":2},{"x":4,"y":4},{"x":2,"y":5}],[{"x":1,"y":3},{"x":3,"y":3},{"x":3,"y":5},{"x":1,"y":5}],[{"x":1,"y":4},{"x":2,"y":1},{"x":5,"y":2},{"x":4,"y":5}],[{"x":1,"y":4},{"x":2,"y":2},{"x":4,"y":3},{"x":3,"y":5}],[{"x":1,"y":4},{"x":2,"y":3},{"x":3,"y":4},{"x":2,"y":5}],[{"x":1,"y":4},{"x":2,"y":4},{"x":2,"y":5},{"x":1,"y":5}],[{"x":2,"y":0},{"x":3,"y":0},{"x":3,"y":1},{"x":2,"y":1}],[{"x":2,"y":0},{"x":4,"y":0},{"x":4,"y":2},{"x":2,"y":2}],[{"x":2,"y":0},{"x":5,"y":0},{"x":5,"y":3},{"x":2,"y":3}],[{"x":2,"y":1},{"x":3,"y":0},{"x":4,"y":1},{"x":3,"y":2}],[{"x":2,"y":1},{"x":3,"y":1},{"x":3,"y":2},{"x":2,"y":2}],[{"x":2,"y":1},{"x":4,"y":0},{"x":5,"y":2},{"x":3,"y":3}],[{"x":2,"y":1},{"x":4,"y":1},{"x":4,"y":3},{"x":2,"y":3}],[{"x":2,"y":1},{"x":5,"y":1},{"x":5,"y":4},{"x":2,"y":4}],[{"x":2,"y":2},{"x":3,"y":0},{"x":5,"y":1},{"x":4,"y":3}],[{"x":2,"y":2},{"x":3,"y":1},{"x":4,"y":2},{"x":3,"y":3}],[{"x":2,"y":2},{"x":3,"y":2},{"x":3,"y":3},{"x":2,"y":3}],[{"x":2,"y":2},{"x":4,"y":1},{"x":5,"y":3},{"x":3,"y":4}],[{"x":2,"y":2},{"x":4,"y":2},{"x":4,"y":4},{"x":2,"y":4}],[{"x":2,"y":2},{"x":5,"y":2},{"x":5,"y":5},{"x":2,"y":5}],[{"x":2,"y":3},{"x":3,"y":1},{"x":5,"y":2},{"x":4,"y":4}],[{"x":2,"y":3},{"x":3,"y":2},{"x":4,"y":3},{"x":3,"y":4}],[{"x":2,"y":3},{"x":3,"y":3},{"x":3,"y":4},{"x":2,"y":4}],[{"x":2,"y":3},{"x":4,"y":2},{"x":5,"y":4},{"x":3,"y":5}],[{"x":2,"y":3},{"x":4,"y":3},{"x":4,"y":5},{"x":2,"y":5}],[{"x":2,"y":4},{"x":3,"y":2},{"x":5,"y":3},{"x":4,"y":5}],[{"x":2,"y":4},{"x":3,"y":3},{"x":4,"y":4},{"x":3,"y":5}],[{"x":2,"y":4},{"x":3,"y":4},{"x":3,"y":5},{"x":2,"y":5}],[{"x":3,"y":0},{"x":4,"y":0},{"x":4,"y":1},{"x":3,"y":1}],[{"x":3,"y":0},{"x":5,"y":0},{"x":5,"y":2},{"x":3,"y":2}],[{"x":3,"y":1},{"x":4,"y":0},{"x":5,"y":1},{"x":4,"y":2}],[{"x":3,"y":1},{"x":4,"y":1},{"x":4,"y":2},{"x":3,"y":2}],[{"x":3,"y":1},{"x":5,"y":1},{"x":5,"y":3},{"x":3,"y":3}],[{"x":3,"y":2},{"x":4,"y":1},{"x":5,"y":2},{"x":4,"y":3}],[{"x":3,"y":2},{"x":4,"y":2},{"x":4,"y":3},{"x":3,"y":3}],[{"x":3,"y":2},{"x":5,"y":2},{"x":5,"y":4},{"x":3,"y":4}],[{"x":3,"y":3},{"x":4,"y":2},{"x":5,"y":3},{"x":4,"y":4}],[{"x":3,"y":3},{"x":4,"y":3},{"x":4,"y":4},{"x":3,"y":4}],[{"x":3,"y":3},{"x":5,"y":3},{"x":5,"y":5},{"x":3,"y":5}],[{"x":3,"y":4},{"x":4,"y":3},{"x":5,"y":4},{"x":4,"y":5}],[{"x":3,"y":4},{"x":4,"y":4},{"x":4,"y":5},{"x":3,"y":5}],[{"x":4,"y":0},{"x":5,"y":0},{"x":5,"y":1},{"x":4,"y":1}],[{"x":4,"y":1},{"x":5,"y":1},{"x":5,"y":2},{"x":4,"y":2}],[{"x":4,"y":2},{"x":5,"y":2},{"x":5,"y":3},{"x":4,"y":3}],[{"x":4,"y":3},{"x":5,"y":3},{"x":5,"y":4},{"x":4,"y":4}],[{"x":4,"y":4},{"x":5,"y":4},{"x":5,"y":5},{"x":4,"y":5}]];
+
+function checkPoinInLine(linePoint1, linePoint2, point)
+{
+    var slope1 = (linePoint2.y - linePoint1.y)/(linePoint2.x - linePoint1.x);
+    var slope2 = (point.y - linePoint1.y)/(point.x - linePoint1.x);
+    var area1 = (linePoint2.y - linePoint1.y)**2 + (linePoint2.x - linePoint1.x)**2;
+    var area2 = (point.y - linePoint1.y)**2 + (point.x - linePoint1.x)**2;
+    if( slope1 == slope2 && area2 < area1 ) return true;
+    return false;
+}
 
 function calculateAllSquares(inputInput, sqaure_groups, square_area_groups, inputTmp, inputTmpForArea, level)
 {
@@ -27,36 +37,58 @@ function calculateAllSquares(inputInput, sqaure_groups, square_area_groups, inpu
     for( i=0; i<inputInput.length - (6-level); i++ ) {
         // for debug
         if( level <= 1 ) console.log("level: ", level, "i: ", i);
+
+        var squareToUse = inputInput[i];
         
         // push a item
         var tmp = inputTmp.slice();
-        tmp.push(inputInput[i]);
+        tmp.push(squareToUse);
 
         // update area
         var tmpForArea = JSON.parse(JSON.stringify(inputTmpForArea));
-        var area = (inputInput[i][0].x - inputInput[i][1].x)**2 + (inputInput[i][0].y - inputInput[i][1].y)**2;
+        var area = (squareToUse[0].x - squareToUse[1].x)**2 + (squareToUse[0].y - squareToUse[1].y)**2;
         if( tmpForArea[area] === undefined ) tmpForArea[area] = [];
-        tmpForArea[area].push(inputInput[i]);
+        tmpForArea[area].push(squareToUse);
 
         // prepare input
         var input = [];
         for( j=i+1; j<inputInput.length; j++ ) {
-            if( inputInput[j][0].x == inputInput[i][0].x && inputInput[j][0].y == inputInput[i][0].y ) continue;
-            if( inputInput[j][0].x == inputInput[i][1].x && inputInput[j][0].y == inputInput[i][1].y ) continue;
-            if( inputInput[j][0].x == inputInput[i][2].x && inputInput[j][0].y == inputInput[i][2].y ) continue;
-            if( inputInput[j][0].x == inputInput[i][3].x && inputInput[j][0].y == inputInput[i][3].y ) continue;
-            if( inputInput[j][1].x == inputInput[i][0].x && inputInput[j][1].y == inputInput[i][0].y ) continue;
-            if( inputInput[j][1].x == inputInput[i][1].x && inputInput[j][1].y == inputInput[i][1].y ) continue;
-            if( inputInput[j][1].x == inputInput[i][2].x && inputInput[j][1].y == inputInput[i][2].y ) continue;
-            if( inputInput[j][1].x == inputInput[i][3].x && inputInput[j][1].y == inputInput[i][3].y ) continue;
-            if( inputInput[j][2].x == inputInput[i][0].x && inputInput[j][2].y == inputInput[i][0].y ) continue;
-            if( inputInput[j][2].x == inputInput[i][1].x && inputInput[j][2].y == inputInput[i][1].y ) continue;
-            if( inputInput[j][2].x == inputInput[i][2].x && inputInput[j][2].y == inputInput[i][2].y ) continue;
-            if( inputInput[j][2].x == inputInput[i][3].x && inputInput[j][2].y == inputInput[i][3].y ) continue;
-            if( inputInput[j][3].x == inputInput[i][0].x && inputInput[j][3].y == inputInput[i][0].y ) continue;
-            if( inputInput[j][3].x == inputInput[i][1].x && inputInput[j][3].y == inputInput[i][1].y ) continue;
-            if( inputInput[j][3].x == inputInput[i][2].x && inputInput[j][3].y == inputInput[i][2].y ) continue;
-            if( inputInput[j][3].x == inputInput[i][3].x && inputInput[j][3].y == inputInput[i][3].y ) continue;
+            // skip using the same point
+            if( inputInput[j][0].x == squareToUse[0].x && inputInput[j][0].y == squareToUse[0].y ) continue;
+            if( inputInput[j][0].x == squareToUse[1].x && inputInput[j][0].y == squareToUse[1].y ) continue;
+            if( inputInput[j][0].x == squareToUse[2].x && inputInput[j][0].y == squareToUse[2].y ) continue;
+            if( inputInput[j][0].x == squareToUse[3].x && inputInput[j][0].y == squareToUse[3].y ) continue;
+            if( inputInput[j][1].x == squareToUse[0].x && inputInput[j][1].y == squareToUse[0].y ) continue;
+            if( inputInput[j][1].x == squareToUse[1].x && inputInput[j][1].y == squareToUse[1].y ) continue;
+            if( inputInput[j][1].x == squareToUse[2].x && inputInput[j][1].y == squareToUse[2].y ) continue;
+            if( inputInput[j][1].x == squareToUse[3].x && inputInput[j][1].y == squareToUse[3].y ) continue;
+            if( inputInput[j][2].x == squareToUse[0].x && inputInput[j][2].y == squareToUse[0].y ) continue;
+            if( inputInput[j][2].x == squareToUse[1].x && inputInput[j][2].y == squareToUse[1].y ) continue;
+            if( inputInput[j][2].x == squareToUse[2].x && inputInput[j][2].y == squareToUse[2].y ) continue;
+            if( inputInput[j][2].x == squareToUse[3].x && inputInput[j][2].y == squareToUse[3].y ) continue;
+            if( inputInput[j][3].x == squareToUse[0].x && inputInput[j][3].y == squareToUse[0].y ) continue;
+            if( inputInput[j][3].x == squareToUse[1].x && inputInput[j][3].y == squareToUse[1].y ) continue;
+            if( inputInput[j][3].x == squareToUse[2].x && inputInput[j][3].y == squareToUse[2].y ) continue;
+            if( inputInput[j][3].x == squareToUse[3].x && inputInput[j][3].y == squareToUse[3].y ) continue;
+
+            // skip point on line
+            if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][0]) ) continue;
+            if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][1]) ) continue;
+            if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][2]) ) continue;
+            if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][3]) ) continue;
+            if( checkPoinInLine(squareToUse[1], squareToUse[2], inputInput[j][0]) ) continue;
+            if( checkPoinInLine(squareToUse[1], squareToUse[2], inputInput[j][1]) ) continue;
+            if( checkPoinInLine(squareToUse[1], squareToUse[2], inputInput[j][2]) ) continue;
+            if( checkPoinInLine(squareToUse[1], squareToUse[2], inputInput[j][3]) ) continue;
+            if( checkPoinInLine(squareToUse[2], squareToUse[3], inputInput[j][0]) ) continue;
+            if( checkPoinInLine(squareToUse[2], squareToUse[3], inputInput[j][1]) ) continue;
+            if( checkPoinInLine(squareToUse[2], squareToUse[3], inputInput[j][2]) ) continue;
+            if( checkPoinInLine(squareToUse[2], squareToUse[3], inputInput[j][3]) ) continue;
+            if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][0]) ) continue;
+            if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][1]) ) continue;
+            if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][2]) ) continue;
+            if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][3]) ) continue;
+
             input.push(inputInput[j]);
         }
 
@@ -69,21 +101,20 @@ export default class SevenSquaresPage extends React.Component {
     constructor(props) {
         super(props);
 
-        var sqaure_groups = [];
+        var square_groups = [];
         var square_area_groups = [];
         var tmp = [];
         var tmp_for_area = {};
-        calculateAllSquares(sixBySixSquares, sqaure_groups, square_area_groups, tmp, tmp_for_area, 0);
+        calculateAllSquares(sixBySixSquares, square_groups, square_area_groups, tmp, tmp_for_area, 0);
 
         // states
-        var default_width = 200;
         var points = calculatePoints(default_width, 6);
         this.state = {
             width: default_width,
             width_inc: (default_width - point_radius*2)/(6-1),
             n: 6,
             points: points,
-            square_groups: sqaure_groups,
+            square_groups: square_groups,
             square_area_groups: square_area_groups
         };
 
