@@ -3,7 +3,7 @@ export const default_n = 4;
 export const point_radius = 5;
 export const stroke_width = 2;
 
-export function calculate_points(width, n)
+export function calculatePoints(width, n)
 {
     var i=0, j=0;
     var points = [];
@@ -17,7 +17,7 @@ export function calculate_points(width, n)
     return points;
 }
 
-export function rotate_vector(vec, ang)
+export function rotateVector(vec, ang)
 {
     ang = -ang * (Math.PI/180);
     var cos = Math.cos(ang);
@@ -25,11 +25,22 @@ export function rotate_vector(vec, ang)
     return new Array(Math.round(10000*(vec[0] * cos - vec[1] * sin))/10000, Math.round(10000*(vec[0] * sin + vec[1] * cos))/10000);
 }
 
-export function compare_point(a, b)
+export function comparePoint(a, b)
 {
     if(a.x < b.x) return -1;
     if(a.x > b.x) return 1;
     if(a.y < b.y) return -1;
     if(a.y > b.y) return 1;
     return 0;
+}
+
+export function indexOfPointInList(points, x, y) {
+    var i = 0;
+    var points_length = points.length;
+    for(i=0; i<points_length; i++ ) {
+        if( points[i].x == x && points[i].y == y ) {
+            return i;
+        }
+    }
+    return -1;
 }

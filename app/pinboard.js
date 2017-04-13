@@ -1,13 +1,13 @@
 import React from 'react';
-import { calculate_points, rotate_vector, compare_point } from './util.js'
+import { calculatePoints, rotateVector, comparePoint } from './util.js'
 import { default_width, default_n, point_radius, stroke_width } from "./util.js"
 
-export default class PinBoardPage extends React.Component {
+export default class PinBoardPagePage extends React.Component {
     constructor(props) {
         super(props);
 
         // states
-        var points = calculate_points(default_width, default_n);
+        var points = calculatePoints(default_width, default_n);
         this.state = {
             width: default_width,
             width_inc: (default_width - point_radius*2)/(default_n-1),
@@ -31,7 +31,7 @@ export default class PinBoardPage extends React.Component {
         this.setState({[name]: value});
     }
     handleSubmit(event) {
-        var points = calculate_points(this.state.width, this.state.n);
+        var points = calculatePoints(this.state.width, this.state.n);
         this.setState({width_inc: (this.state.width - point_radius*2) / (this.state.n - 1)});
         this.setState({points: points});
         event.preventDefault();

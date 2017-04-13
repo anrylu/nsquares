@@ -1,17 +1,7 @@
 import React from 'react';
-import { calculate_points, rotate_vector, compare_point } from './util.js'
+import { calculatePoints, rotateVector,
+         comparePoint, indexOfPointInList } from './util.js'
 import { default_width, default_n, point_radius, stroke_width } from "./util.js"
-
-function indexOfPointInList(points, x, y) {
-    var i = 0;
-    var points_length = points.length;
-    for(i=0; i<points_length; i++ ) {
-        if( points[i].x == x && points[i].y == y ) {
-            return i;
-        }
-    }
-    return -1;
-}
 
 function calculate_squares(points, supress_points)
 {
@@ -36,7 +26,7 @@ function calculate_squares(points, supress_points)
             original_vec = [points[j].x - points[i].x, points[j].y - points[i].y];
 
             // calculate point 3
-            rotated_vec = rotate_vector(original_vec, -90.0);
+            rotated_vec = rotateVector(original_vec, -90.0);
             square_obj.push({x: points[j].x + rotated_vec[0], y: points[j].y + rotated_vec[1]});
             if( square_obj[2].x > max_x ||
                 square_obj[2].x < 0 ||
@@ -45,7 +35,7 @@ function calculate_squares(points, supress_points)
             if( indexOfPointInList(supress_points, square_obj[2].x, square_obj[2].y) >= 0 ) continue;
 
             // calculate point 4
-            rotated_vec = rotate_vector(original_vec, -180.0);
+            rotated_vec = rotateVector(original_vec, -180.0);
             square_obj.push({x: square_obj[2].x + rotated_vec[0], y: square_obj[2].y + rotated_vec[1]});
             if( square_obj[3].x > max_x || 
                 square_obj[3].x  < 0 ||
@@ -107,7 +97,7 @@ export default class NByNPage extends React.Component {
         super(props);
 
         // states
-        var points = calculate_points(default_width, default_n);
+        var points = calculatePoints(default_width, default_n);
         var supress_points = [];
         var squares = calculate_squares(points, supress_points);
         var squares_statistics = calulate_squares_statistics(squares);
@@ -133,7 +123,7 @@ export default class NByNPage extends React.Component {
         this.setState({[name]: value});
     }
     handleSubmit(event) {
-        var points = calculate_points(this.state.width, this.state.n);
+        var points = calculatePoints(this.state.width, this.state.n);
         var supress_points = [];
         var squares = calculate_squares(points, supress_points);
         var squares_statistics = calulate_squares_statistics(squares);
@@ -180,12 +170,12 @@ export default class NByNPage extends React.Component {
 
         // determine squares to draw
         var liStyle = {
-            'background-color': 'yellow'
+            'backgroundColor': 'yellow'
         };
         var squares_to_draw = this.state.squares;
         if( this.state.square_area_selected != null ) {
             squares_to_draw = this.state.squares_statistics[this.state.square_area_selected];
-            liStyle['background-color'] = 'white';
+            liStyle['backgroundColor'] = 'white';
         }
 
         // prepare liOnClick
@@ -211,9 +201,9 @@ export default class NByNPage extends React.Component {
                         {Object.keys(this.state.squares_statistics).map((key) => {
                             var liOnClick = this.handleAreaSelect.bind(this, key);
                             var liStyle = {
-                                'background-color': 'white'
+                                'backgroundColor': 'white'
                             };
-                            if( this.state.square_area_selected == key ) liStyle['background-color'] = 'yellow';
+                            if( this.state.square_area_selected == key ) liStyle['backgroundColor'] = 'yellow';
                             return (<li style={liStyle} key={"squares_statistics_" + key} onClick={liOnClick}>{key} -> {this.state.squares_statistics[key].length}</li>);
                         })}
                     </ul>

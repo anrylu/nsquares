@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import NByNPage from './nbyn.js'
-import PinBoard from './pinboard.js'
+import PinBoardPage from './pinboard.js'
+import SevenSquaresPage from './seven-squares.js'
 
 class App extends React.Component
 {
@@ -15,12 +16,16 @@ class App extends React.Component
                 <TabList>
                     <Tab>NxN</Tab>
                     <Tab>PinBoard</Tab>
+                    <Tab>7 Squares</Tab>
                 </TabList>
                 <TabPanel>
                     <NByNPage />
                 </TabPanel>
                 <TabPanel>
-                    <PinBoard />
+                    <PinBoardPage />
+                </TabPanel>
+                <TabPanel>
+                    <SevenSquaresPage />
                 </TabPanel>
             </Tabs>
         )
