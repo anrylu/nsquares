@@ -7,10 +7,16 @@ var sixBySixSquares = [[{"x":0,"y":0},{"x":1,"y":0},{"x":1,"y":1},{"x":0,"y":1}]
 
 function checkPoinInLine(linePoint1, linePoint2, point)
 {
-    var slope1 = (linePoint2.y - linePoint1.y)/(linePoint2.x - linePoint1.x);
-    var slope2 = (point.y - linePoint1.y)/(point.x - linePoint1.x);
+    var xdiff1 = linePoint2.x - linePoint1.x;
+    var slope1 = 99999;
+    if( xdiff1 != 0 ) slope1 = (linePoint2.y - linePoint1.y)/xdiff1;
     var area1 = (linePoint2.y - linePoint1.y)**2 + (linePoint2.x - linePoint1.x)**2;
+
+    var xdiff2 = point.x - linePoint1.x;
+    var slope2 = 99999;
+    if( xdiff2 != 0 ) slope2 = (point.y - linePoint1.y)/xdiff2;
     var area2 = (point.y - linePoint1.y)**2 + (point.x - linePoint1.x)**2;
+
     if( slope1 == slope2 && area2 < area1 ) return true;
     return false;
 }
@@ -29,15 +35,13 @@ function calculateAllSquares(inputInput, sqaure_groups, square_area_groups, inpu
     if( inputInput.length == 0 ) {
         return;
     }
-    //if( sqaure_groups.length >= 1000 ) {
-    //    return;
-    //}
 
     // loop input
     for( i=0; i<inputInput.length - (6-level); i++ ) {
         // for debug
         if( level <= 1 ) console.log("level: ", level, "i: ", i);
 
+        // determine square to use
         var squareToUse = inputInput[i];
         
         // push a item
@@ -71,7 +75,7 @@ function calculateAllSquares(inputInput, sqaure_groups, square_area_groups, inpu
             if( inputInput[j][3].x == squareToUse[2].x && inputInput[j][3].y == squareToUse[2].y ) continue;
             if( inputInput[j][3].x == squareToUse[3].x && inputInput[j][3].y == squareToUse[3].y ) continue;
 
-            // skip point on line
+            // skip point on line (1)
             if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][0]) ) continue;
             if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][1]) ) continue;
             if( checkPoinInLine(squareToUse[0], squareToUse[1], inputInput[j][2]) ) continue;
@@ -88,6 +92,24 @@ function calculateAllSquares(inputInput, sqaure_groups, square_area_groups, inpu
             if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][1]) ) continue;
             if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][2]) ) continue;
             if( checkPoinInLine(squareToUse[3], squareToUse[0], inputInput[j][3]) ) continue;
+
+            // skip point on line (2)
+            if( checkPoinInLine(inputInput[j][0], inputInput[j][1], squareToUse[0]) ) continue;
+            if( checkPoinInLine(inputInput[j][0], inputInput[j][1], squareToUse[1]) ) continue;
+            if( checkPoinInLine(inputInput[j][0], inputInput[j][1], squareToUse[2]) ) continue;
+            if( checkPoinInLine(inputInput[j][0], inputInput[j][1], squareToUse[3]) ) continue;
+            if( checkPoinInLine(inputInput[j][1], inputInput[j][2], squareToUse[0]) ) continue;
+            if( checkPoinInLine(inputInput[j][1], inputInput[j][2], squareToUse[1]) ) continue;
+            if( checkPoinInLine(inputInput[j][1], inputInput[j][2], squareToUse[2]) ) continue;
+            if( checkPoinInLine(inputInput[j][1], inputInput[j][2], squareToUse[3]) ) continue;
+            if( checkPoinInLine(inputInput[j][2], inputInput[j][3], squareToUse[0]) ) continue;
+            if( checkPoinInLine(inputInput[j][2], inputInput[j][3], squareToUse[1]) ) continue;
+            if( checkPoinInLine(inputInput[j][2], inputInput[j][3], squareToUse[2]) ) continue;
+            if( checkPoinInLine(inputInput[j][2], inputInput[j][3], squareToUse[3]) ) continue;
+            if( checkPoinInLine(inputInput[j][3], inputInput[j][0], squareToUse[0]) ) continue;
+            if( checkPoinInLine(inputInput[j][3], inputInput[j][0], squareToUse[1]) ) continue;
+            if( checkPoinInLine(inputInput[j][3], inputInput[j][0], squareToUse[2]) ) continue;
+            if( checkPoinInLine(inputInput[j][3], inputInput[j][0], squareToUse[3]) ) continue;
 
             input.push(inputInput[j]);
         }
